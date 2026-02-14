@@ -59,8 +59,8 @@
 
 // Defining states for speed control
 #define OFF 0
-#define HIGH                LEDC_DUTY_INCREMENT/0.6   
-#define LOW                 LEDC_DUTY_INCREMENT/1.5  
+#define HIGH                LEDC_DUTY_INCREMENT/0.6   // Calculate 25rpm --> check the README on detail for calculation
+#define LOW                 LEDC_DUTY_INCREMENT/1.5    // Calculate 10 rpm --> check the README on detail for calculation
                                                       
 
 int duty = 0; //variable to control duty cylce of wipers
@@ -71,11 +71,7 @@ adc_cali_handle_t cali_gpio17;
 
 hd44780_t lcd; //intializing lcd variable to use it globally
 
-// function to specify delays in milliseconds
-void delay_ms(int t) {
-   vTaskDelay(pdMS_TO_TICKS(t));
-}
-
+// initializing the LEDC 
 static void example_ledc_init(void)
 {
     // Prepare and then apply the LEDC PWM timer configuration
@@ -127,7 +123,7 @@ void wiper_task(void *pvParameters) {
     int mv16;
     int mv17;
     int speed;
-    int delay = 0;
+    int delay = 0; // Initializing the delay to 0 incase when the windshield is not in intermittent mode 
     
     while(1) {  // Tasks have their own infinite loop
         
@@ -164,15 +160,15 @@ void ignition_check_task(void *pvParameters) {
             ignition_pushed = !ignition_pushed;
             vTaskDelay(pdMS_TO_TICKS(300)); // debounce
         }
-        vTaskDelay(pdMS_TO_TICKS(50)); // polling delay - always runs
+        vTaskDelay(pdMS_TO_TICKS(20)); // polling delay - always runs
     }
 }
 
 
 void app_main(void)
 {
-
-    lcd = (hd44780_t) // Initializing the LCD display
+// Initializing the LCD display
+    lcd = (hd44780_t) 
     {
         .write_cb = NULL,
         .font = HD44780_FONT_5X8,
@@ -190,7 +186,7 @@ void app_main(void)
 
     ESP_ERROR_CHECK(hd44780_init(&lcd));
 
-    
+    // initializing the ADC channel 
     adc_oneshot_unit_init_cfg_t init_config = {
         .unit_id = ADC_UNIT_2,
     };
