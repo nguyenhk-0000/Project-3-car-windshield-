@@ -26,7 +26,7 @@ verified with a stopwatch, and each mode operates within the expected parameters
 ### links:
 This system was built from [Nathan's repository](https://github.com/goldstn2-oss/project-2-nathan-jacob)
 
-### testing results summary:
+### Testing results summary:
 ## IGNITION SUBSYSTEM 
 | Specification | Process | Result |
 |---|---|---|
