@@ -41,26 +41,27 @@
 #define ADC_CHANNEL_GPIO17   ADC_CHANNEL_6 // GPIO17 is ADC Channel 6  
 #define ADC_ATTEN           ADC_ATTEN_DB_12 // 0-3.6V
 #define BITWIDTH            ADC_BITWIDTH_12 // 12 bit width
-#define DELAY_MS 250
 
 
 // Defining states for delay control
 #define SHORT  1000 
 #define MEDIUM 3000
 #define LONG   5000
-#define duty_update 10 //defines how often the duty cycle is updated when changing speed modes (lower value means faster update and smoother movement but more CPU usage)
+#define duty_update 10 //defines how often the duty cycle is updated when changing speed modes
+#define duty_update_ms duty_update/1000 //duty_update in ms
 
 //Calculate the values for the minimum (0.75ms) and maximum (2.25) servo pulse widths
-#define LEDC_DUTY_MIN           (300) // Set duty to lowest.
-#define LEDC_DUTY_MAX           (800) // Set duty to highest.
+#define LEDC_DUTY_MIN           (350) // Set duty to lowest.
+#define LEDC_DUTY_MAX           (717) // Set duty to highest.
 #define LEDC_DUTY_DIFFERENCE      (LEDC_DUTY_MAX - LEDC_DUTY_MIN) // Difference between max and min duty
-#define LEDC_DUTY_INCREMENT       (LEDC_DUTY_DIFFERENCE*duty_update/1000) // Duty increment for each update based on desired update frequency   
+#define LEDC_DUTY_INCREMENT       (LEDC_DUTY_DIFFERENCE * duty_update_ms) // Duty increment for each update based on desired update frequency   
 
 
 // Defining states for speed control
 #define OFF 0
-#define HIGH                LEDC_DUTY_INCREMENT/0.6                                        //calculates 25 RPM
-#define LOW                 LEDC_DUTY_INCREMENT/1.5  //calculates 10RPM
+#define HIGH                LEDC_DUTY_INCREMENT/0.6   
+#define LOW                 LEDC_DUTY_INCREMENT/1.5  
+                                                      
 
 int duty = 0; //variable to control duty cylce of wipers
 
@@ -120,7 +121,7 @@ void check_for_engine_fail (void);
    bool rlstate = false;// Red light state to indicate when the engine has been put on correctly 
    bool ignition_pushed = false;
    volatile bool interm_mode = false; 
-   
+
 void wiper_task(void *pvParameters) {
 
     int mv16;
@@ -161,7 +162,6 @@ void ignition_check_task(void *pvParameters) {
     while(1){
         if(!gpio_get_level(BUTTON_IG)){
             ignition_pushed = !ignition_pushed;
-            printf("switched\n");
             vTaskDelay(pdMS_TO_TICKS(300)); // debounce
         }
         vTaskDelay(pdMS_TO_TICKS(50)); // polling delay - always runs
@@ -172,7 +172,7 @@ void ignition_check_task(void *pvParameters) {
 void app_main(void)
 {
 
-    lcd = (hd44780_t)
+    lcd = (hd44780_t) // Initializing the LCD display
     {
         .write_cb = NULL,
         .font = HD44780_FONT_5X8,
@@ -268,8 +268,8 @@ void app_main(void)
    gpio_pullup_en(BUTTON_PSSB);
    gpio_pullup_en(BUTTON_IG);
 
-xTaskCreate(wiper_task, "wiper", 4096, NULL, 5, NULL);
-xTaskCreate(ignition_check_task, "ignition", 4096, NULL, 5, NULL);
+xTaskCreate(wiper_task, "wiper", 4096, NULL, 5, NULL); // Initializing the wiper task
+xTaskCreate(ignition_check_task, "ignition", 4096, NULL, 5, NULL); // Initializing the ignition task 
 
   // Main loop
 
@@ -339,7 +339,7 @@ vTaskDelay(pdMS_TO_TICKS(10));
 
 }
 
-
+// Initialing function for reading ADC channel 
 
 int read_adc_channel(adc_channel_t channel, adc_cali_handle_t cali_handle){
     int raw, mv;
@@ -348,7 +348,7 @@ int read_adc_channel(adc_channel_t channel, adc_cali_handle_t cali_handle){
     return mv;
 }
 
-
+// displaying the speed that the user selected for the windshield on the LCD display
 int check_speed(int mv17){
     hd44780_clear(&lcd);
     if (mv17 >= 0 && mv17 < 900) { //range for speed mode off
@@ -383,7 +383,7 @@ int check_speed(int mv17){
 
     }
 
-
+// Displaying the delays that the user selected for the windshield while in intermittent mode on the LCD display 
 int check_delay(int mv16){
 if (mv16 >= 0 && mv16 < 1060 ) { //range for when light mode is set to off
     hd44780_gotoxy(&lcd, 0, 1);
@@ -404,7 +404,7 @@ else {
 
 }
 
-
+// Windshield wiping motion
 void wipe_wipers (int duty, int speed, int delay, int mv17){
   
     for (int duty = LEDC_DUTY_MIN; duty <= LEDC_DUTY_MAX; duty += speed) {
@@ -421,7 +421,7 @@ void wipe_wipers (int duty, int speed, int delay, int mv17){
     vTaskDelay(delay/portTICK_PERIOD_MS);
     }
     }
-
+// The alarm system 
 void check_for_engine_fail(void) {
     gpio_set_level(ALARM, 1); // Sound alarm
     ignition_pushed = false; //reset ignition push variable
@@ -447,5 +447,3 @@ void check_for_engine_fail(void) {
         pasbeltflag = false;
     }
 }
-
-
