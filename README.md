@@ -12,11 +12,22 @@ sweeps back and forth at either 25 or 10 cycles per minute. In intermittent mode
 low speed but pauses at the bottom for a driver-selected delay of 1, 3, or 5 seconds before starting 
 another sweep. The current wiper mode and delay setting are shown on the display.
 
+The system is designed with safety in mind, if the wipers are moving and the driver turns them off or 
+shuts down the engine, the wipers always complete their current sweep and return to the parked position 
+at 0 degrees. This prevents the wipers from stopping mid-windshield where they could block the driver's 
+view.
+
+For this project, we chose to use a position servo motor for the wiper mechanism because the motion we 
+want to achieve is at most 180 degrees, which the position servo is perfectly suited for. Position 
+servos provide precise angular control, allowing us to accurately sweep between 0 and 90 degrees and 
+reliably return to the exact parked position. This precision is essential for mimicking real windshield 
+wiper behavior and ensuring the wiper consistently stops at the bottom of its stroke. All timing was 
+verified with a stopwatch, and each mode operates within the expected parameters.
 ### links:
 This system was built from [Nathan's repository](https://github.com/goldstn2-oss/project-2-nathan-jacob)
 
 ### testing results summary:
-## Testing Results
+## ignition subsystem
 
 | Specification | Process | Result |
 |---|---|---|
@@ -24,15 +35,15 @@ This system was built from [Nathan's repository](https://github.com/goldstn2-oss
 | Green LED lights only when both seats are occupied and both seatbelts are fastened. | *2 buttons: driver_seat, pass_seat; 2 switches: driver_belt, pass_belt*<br>1. All engaged<br>2. One seatbelt unfastened<br>3. One seat unoccupied<br>4. None engaged | All tests passed<br>1. Green LED on<br>2–4. Green LED off |
 | If ignition button is pressed while green LED is on, engine starts (red LED on, green LED off, "Engine started" displayed). | *1 button: ignition*<br>1. Green LED on → press ignition | All tests passed<br>1. Red LED on, green LED off, message displayed |
 | If ignition button is pressed while green LED is off, alarm sounds and error messages display all missing conditions. | *1 button: ignition*<br>1. Green LED off → press ignition<br>2. Multiple conditions unmet | All tests passed<br>1. Alarm sounds, error messages shown<br>2. All unmet conditions listed |
-| Once engine is running, it stays running even if seats are vacated or seatbelts removed. | *Engine running → release all seat buttons and switches*<br>1. Remove driver<br>2. Remove passenger<br>3. Unfasten belts | All tests passed<br>1–3. Engine continues running (Red LED stays on) |
 | When engine is running and ignition button is pressed again, engine stops (Red LED off). | *Engine running → press ignition* | All tests passed<br>1. Red LED off, engine stops |
+
+## windshield wiper subsystem 
+| Specification | Process | Result |
+|---|---|---|
 | Wipers only run if engine is running. If engine is off, wipers remain stationary at 0°. | *Engine off → set wiper mode to HI, LO, or INT* | All tests passed<br>1. Wiper remains at 0°, no motion |
 | In HI mode, wiper continuously cycles 0° → 90° → 0° at 25 rpm (period ≈ 2.4 seconds). | *Engine on → set wiper mode to HI*<br>1. Measure time for 10 cycles | All tests passed<br>1. Time ≈ 24 seconds (2.4 sec/cycle) |
 | In LO mode, wiper continuously cycles 0° → 90° → 0° at 10 rpm (period ≈ 6 seconds). | *Engine on → set wiper mode to LO*<br>1. Measure time for 10 cycles | All tests passed<br>1. Time ≈ 60 seconds (6 sec/cycle) |
 | In INT mode, wiper runs at low speed with a delay at 0° based on delay selector: SHORT (1s), MEDIUM (3s), LONG (5s). | *Engine on → set wiper mode to INT*<br>1. Set delay to SHORT, measure 10 cycles<br>2. Set delay to MEDIUM, measure 10 cycles<br>3. Set delay to LONG, measure 10 cycles | All tests passed<br>1. Each cycle ≈ 7 sec (6 sec LO + 1s delay)<br>2. Each cycle ≈ 9 sec<br>3. Each cycle ≈ 11 sec |
 | LCD displays selected wiper mode. In INT mode, also displays delay time (SHORT, MEDIUM, LONG). | *Engine on → change wiper mode and delay*<br>1. Switch to HI, LO, OFF<br>2. Switch to INT with each delay | All tests passed<br>1. Display shows HI, LO, OFF<br>2. Display shows INT with SHORT/MEDIUM/LONG |
-| If wiper mode is turned to OFF while wipers are moving, they complete the current cycle and stop at 0°. | *Engine on, wipers in HI/LO/INT → turn mode to OFF mid-cycle* | All tests passed<br>1. Wiper finishes current sweep, stops at 0° |
-| If wiper mode is turned to OFF while in INT mode delay, wipers remain stationary. | *Engine on, wipers in INT and in delay → turn mode to OFF* | All tests passed<br>1. Wiper stays at 0°, no further motion |
 | If engine is turned off while wipers are moving, they complete the current cycle and stop at 0°. | *Engine on, wipers in HI/LO/INT → press ignition to stop engine mid-cycle* | All tests passed<br>1. Wiper finishes sweep, stops at 0°, engine off |
 | If engine is turned off while in INT mode delay, wipers remain stationary. | *Engine on, wipers in INT and in delay → press ignition to stop engine* | All tests passed<br>1. Wiper stays at 0°, engine off |
-| [Challenge] If engine is turned off while wipers are moving, they freeze in place. When engine restarts, they return to 0° at low speed. | *Engine on, wipers moving → turn off engine → restart engine* | All tests passed<br>1. Wipers freeze mid-sweep<br>2. On restart, they complete cycle slowly to 0° |
