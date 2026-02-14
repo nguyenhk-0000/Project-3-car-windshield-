@@ -27,8 +27,7 @@ verified with a stopwatch, and each mode operates within the expected parameters
 This system was built from [Nathan's repository](https://github.com/goldstn2-oss/project-2-nathan-jacob)
 
 ### testing results summary:
-## ignition subsystem
-
+## IGNITION SUBSYSTEM 
 | Specification | Process | Result |
 |---|---|---|
 | When the driver sits down, the system prints "Welcome to enhanced alarm system model 218-W26" exactly once. | *1 button: driver_seat*<br>1. Press driver seat button<br>2. Press driver seat button again after reset<br>3. Press driver seat button while passenger seat is also pressed | All tests passed<br>1. Welcome message appears<br>2. Message appears only on first press<br>3. Message appears only once |
@@ -36,8 +35,9 @@ This system was built from [Nathan's repository](https://github.com/goldstn2-oss
 | If ignition button is pressed while green LED is on, engine starts (red LED on, green LED off, "Engine started" displayed). | *1 button: ignition*<br>1. Green LED on → press ignition | All tests passed<br>1. Red LED on, green LED off, message displayed |
 | If ignition button is pressed while green LED is off, alarm sounds and error messages display all missing conditions. | *1 button: ignition*<br>1. Green LED off → press ignition<br>2. Multiple conditions unmet | All tests passed<br>1. Alarm sounds, error messages shown<br>2. All unmet conditions listed |
 | When engine is running and ignition button is pressed again, engine stops (Red LED off). | *Engine running → press ignition* | All tests passed<br>1. Red LED off, engine stops |
+| When engine is running and the seatbelt are unbuckled or if the driver seat is left vacant, the ignition stays on. | 1. Press driver seat button <br> 2. Press driver seat belt button <br> 3. Press passenger seat button | All tests passed <br> 1-3. the Red LED stays on which means the ignition is still on |
 
-## windshield wiper subsystem 
+## WINDSHIELD WIPER SUBSYSTEM 
 | Specification | Process | Result |
 |---|---|---|
 | Wipers only run if engine is running. If engine is off, wipers remain stationary at 0°. | *Engine off → set wiper mode to HI, LO, or INT* | All tests passed<br>1. Wiper remains at 0°, no motion |
