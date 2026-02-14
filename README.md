@@ -18,7 +18,7 @@ at 0 degrees. This prevents the wipers from stopping mid-windshield where they c
 view.
 
 For this project, we chose to use a position servo motor for the wiper mechanism because the motion we 
-want to achieve is at most 180 degrees, which the position servo is perfectly suited for. Position 
+want to achieve is less than 180 degrees, which the position servo is perfectly suited for. Position 
 servos provide precise angular control, allowing us to accurately sweep between 0 and 90 degrees and 
 reliably return to the exact parked position. This precision is essential for mimicking real windshield 
 wiper behavior and ensuring the wiper consistently stops at the bottom of its stroke. All timing was 
