@@ -47,20 +47,19 @@
 #define SHORT  1000 
 #define MEDIUM 3000
 #define LONG   5000
-#define duty_update 10 //defines how often the duty cycle is updated when changing speed modes
-#define duty_update_ms duty_update/1000 //duty_update in ms
+#define duty_update 24 
 
 //Calculate the values for the minimum (0.75ms) and maximum (2.25) servo pulse widths
 #define LEDC_DUTY_MIN           (350) // Set duty to lowest.
 #define LEDC_DUTY_MAX           (717) // Set duty to highest.
 #define LEDC_DUTY_DIFFERENCE      (LEDC_DUTY_MAX - LEDC_DUTY_MIN) // Difference between max and min duty
-#define LEDC_DUTY_INCREMENT       (LEDC_DUTY_DIFFERENCE * duty_update_ms) // Duty increment for each update based on desired update frequency   
+#define LEDC_DUTY_INCREMENT       ((LEDC_DUTY_DIFFERENCE * duty_update)/1000) // Duty increment for each update based on desired update frequency   
 
 
 // Defining states for speed control
 #define OFF 0
-#define HIGH                LEDC_DUTY_INCREMENT/0.6   // Calculate 25rpm --> check the README on detail for calculation
-#define LOW                 LEDC_DUTY_INCREMENT/1.5    // Calculate 10 rpm --> check the README on detail for calculation
+#define HIGH                 (int)(LEDC_DUTY_INCREMENT/0.6)   // Calculate 25rpm --> check the README on detail for calculation
+#define LOW                  (int)(LEDC_DUTY_INCREMENT/1.5)    // Calculate 10 rpm --> check the README on detail for calculation
                                                       
 
 int duty = 0; //variable to control duty cylce of wipers
