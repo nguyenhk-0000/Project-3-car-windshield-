@@ -23,10 +23,77 @@ servos provide precise angular control, allowing us to accurately sweep between 
 reliably return to the exact parked position. This precision is essential for mimicking real windshield 
 wiper behavior and ensuring the wiper consistently stops at the bottom of its stroke. All timing was 
 verified with a stopwatch, and each mode operates within the expected parameters.
+
 ### links:
 This system was built from [Nathan's repository](https://github.com/goldstn2-oss/project-2-nathan-jacob)
 
-### Testing results summary:
+### How we determind our speed and our testing results summary:
+
+Given for Low/Intermittent: (10rev/min)(1min/60sec)(360deg/1 rev) = 60 deg/sec
+(90 deg/60(deg/sec)) =  1.5 second  --> this number is how long it takes the servo to rotate 90 deg
+
+Calculated for High: (25rev/min)(1min/60sec)(360deg/1 rev) = 150 deg/sec
+(90 deg/150(deg/sec)) = 0.6 second  --> this number is how long it takes the servo to rotate 90 deg
+
+We know, very generally, the duty cycle controls the servo motor's position (angle). Therefore we knew that we could change the duty cycle at some rate to increase/decrease the speed. Knowing this we created this formula to calculate how much we would have to change the duty cycle per each speed.
+
+duty increase per cycle = ((LEDC_DUTY_MAX - LEDC_DUTY_MIN)*(seconds per 90degree cyle))/(how long it takes the servo to rotate 90 deg)
+
+In simple terms (LEDC_DUTY_MAX - LEDC_DUTY_MIN) is essentially 90 degrees, seconds per 90 degree cycle for us is 0.024, and the 'how long it takes the servo to rotate 90 degree is what we calculated at the begining of this section;
+
+so our final equation is either (low/intermittent)
+
+duty increase per cycle = ((LEDC_DUTY_DIFF)*(0.024))/(1.5)
+
+or (high)
+
+duty increase per cycle = ((LEDC_DUTY_DIFF)*(0.024))/(0.6)
+
+
+Note: We could not figure out the reason, however this was much more accurate at larger loop delays. 
+
+We tested this below:  
+
+|             HIGH             |                                                     |
+|:----------------------------:|-----------------------------------------------------|
+|  GOAL is 150 degrees per sec |                                                     |
+| Time Per 10 Sweeps           | Degrees per sec (180 Degrees*10)/Time Per 10 Sweeps |
+| 11.77                        | 152.93                                              |
+| 11.97                        | 150.37                                              |
+| 11.88                        | 151.52                                              |
+| 11.91                        | 151.13                                              |
+| 11.8                         | 152.93                                              |
+| 11.89                        | 151.38                                              |
+| 11.89                        | 151.38                                              |
+| 11.68                        | 154.109589                                          |
+| 11.94                        | 150.75                                              |
+| 11.89                        | 151.37                                              |
+
+|     Low && Intermittent     |                                                     |
+|:---------------------------:|-----------------------------------------------------|
+|  GOAL is 60 degrees per sec |                                                     |
+| Time Per 10 Sweeps          | Degrees per sec (180 Degrees*10)/Time Per 10 Sweeps |
+| 29.63                       | 60.74                                               |
+| 29.80                       | 60.40                                               |
+| 29.88                       | 60.24                                               |
+| 29.73                       | 60.54                                               |
+| 29.76                       | 60.48                                               |
+| 29.52                       | 60.97                                               |
+| 29.85                       | 60.30                                               |
+| 29.84                       | 60.32                                               |
+| 29.67                       | 60.67                                               |
+| 29.4                        | 61.22                                               |
+
+Reflections:
+
+High Speed: The average is approximately 151.52 degrees per second
+Percent Difference: 1.01%
+Low Spee: The average is approximately 60.59 degrees per second.
+Percent Difference: 0.98%
+
+The error could probably be due to human reaction time when using the stopwatch. Since the measurements were taken manually over 10 sweeps, small delays in pressing start or stop can introduce slight variations in the calculated degrees per second, leading to the 1% difference from the theoretical goals.
+
+
 ## IGNITION SUBSYSTEM 
 | Specification | Process | Result |
 |---|---|---|
