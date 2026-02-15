@@ -47,7 +47,7 @@
 #define SHORT  1000 
 #define MEDIUM 3000
 #define LONG   5000
-#define duty_update 24 
+#define duty_update  24 
 
 //Calculate the values for the minimum (0.75ms) and maximum (2.25) servo pulse widths
 #define LEDC_DUTY_MIN           (350) // Set duty to lowest.
