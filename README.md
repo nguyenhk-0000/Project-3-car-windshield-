@@ -39,7 +39,7 @@ We know, very generally, the duty cycle controls the servo motor's position (ang
 
 duty increase per cycle = ((LEDC_DUTY_MAX - LEDC_DUTY_MIN)*(seconds per 90degree cyle))/(how long it takes the servo to rotate 90 deg)
 
-In simple terms (LEDC_DUTY_MAX - LEDC_DUTY_MIN) is essentially 90 degrees, seconds per 90 degree cycle for us is 0.024, and the 'how long it takes the servo to rotate 90 degree is what we calculated at the begining of this section;
+In simple terms (LEDC_DUTY_MAX - LEDC_DUTY_MIN) is essentially 90 degrees, seconds per 90 degree cycle for us is 0.024, and the 'how long it takes the servo to rotate 90 degree is what we calculated at the beginning of this section;
 
 so our final equation is either (low/intermittent)
 
@@ -50,7 +50,7 @@ or (high)
 duty increase per cycle = ((LEDC_DUTY_DIFF)*(0.024))/(0.6)
 
 
-Note: We could not figure out the reason, however this was much more accurate at larger loop delays. 
+We observed improved accuracy at larger loop delays. This is likely because very small update intervals caused duty cycle changes to occur faster than the servo could respond. Increasing the loop delay most likely allowed the servo’s internal control loop to settle between updates, resulting in smoother motion and more accurate timing.
 
 We tested this below:  
 
@@ -86,10 +86,10 @@ We tested this below:
 
 Reflections:
 
-High Speed: The average is approximately 151.52 degrees per second
-Percent Difference: 1.01%
-Low Spee: The average is approximately 60.59 degrees per second.
-Percent Difference: 0.98%
+- High Speed: The average is approximately 151.52 degrees per second 
+- Percent Difference: 1.01%
+- Low Speed: The average is approximately 60.59 degrees per second.
+- Percent Difference: 0.98%
 
 The error could probably be due to human reaction time when using the stopwatch. Since the measurements were taken manually over 10 sweeps, small delays in pressing start or stop can introduce slight variations in the calculated degrees per second, leading to the 1% difference from the theoretical goals.
 
@@ -102,14 +102,14 @@ The error could probably be due to human reaction time when using the stopwatch.
 | If ignition button is pressed while green LED is on, engine starts (red LED on, green LED off, "Engine started" displayed). | *1 button: ignition*<br>1. Green LED on → press ignition | All tests passed<br>1. Red LED on, green LED off, message displayed |
 | If ignition button is pressed while green LED is off, alarm sounds and error messages display all missing conditions. | *1 button: ignition*<br>1. Green LED off → press ignition<br>2. Multiple conditions unmet | All tests passed<br>1. Alarm sounds, error messages shown<br>2. All unmet conditions listed |
 | When engine is running and ignition button is pressed again, engine stops (Red LED off). | *Engine running → press ignition* | All tests passed<br>1. Red LED off, engine stops |
-| When engine is running and the seatbelt are unbuckled or if the driver seat is left vacant, the ignition stays on. | 1. Press driver seat button <br> 2. Press driver seat belt button <br> 3. Press passenger seat button | All tests passed <br> 1-3. the Red LED stays on which means the ignition is still on |
+| When engine is running and the seatbelts are unbuckled or if the driver seat is left vacant, the ignition stays on. | 1. Press driver seat button <br> 2. Press driver seat belt button <br> 3. Press passenger seat button | All tests passed <br> 1-3. the Red LED stays on which means the ignition is still on |
 
 ## WINDSHIELD WIPER SUBSYSTEM 
 | Specification | Process | Result |
 |---|---|---|
 | Wipers only run if engine is running. If engine is off, wipers remain stationary at 0°. | *Engine off → set wiper mode to HI, LO, or INT* | All tests passed<br>1. Wiper remains at 0°, no motion |
-| In HI mode, wiper continuously cycles 0° → 90° → 0° at 25 rpm (period ≈ 2.4 seconds). | *Engine on → set wiper mode to HI*<br>1. Measure time for 10 cycles | All tests passed<br>1. Time ≈ 24 seconds (2.4 sec/cycle) |
-| In LO mode, wiper continuously cycles 0° → 90° → 0° at 10 rpm (period ≈ 6 seconds). | *Engine on → set wiper mode to LO*<br>1. Measure time for 10 cycles | All tests passed<br>1. Time ≈ 60 seconds (6 sec/cycle) |
+| In HI mode, wiper continuously cycles 0° → 90° → 0° at 25 rpm. | *Engine on → set wiper mode to HI*<br>1. Measure time for 10 cycles | All tests passed<br>1. Time ≈ 24 seconds (2.4 sec/cycle) |
+| In LO mode, wiper continuously cycles 0° → 90° → 0° at 10 rpm. | *Engine on → set wiper mode to LO*<br>1. Measure time for 10 cycles | All tests passed<br>1. Time ≈ 60 seconds (6 sec/cycle) |
 | In INT mode, wiper runs at low speed with a delay at 0° based on delay selector: SHORT (1s), MEDIUM (3s), LONG (5s). | *Engine on → set wiper mode to INT*<br>1. Set delay to SHORT, measure 10 cycles<br>2. Set delay to MEDIUM, measure 10 cycles<br>3. Set delay to LONG, measure 10 cycles | All tests passed<br>1. Each cycle ≈ 7 sec (6 sec LO + 1s delay)<br>2. Each cycle ≈ 9 sec<br>3. Each cycle ≈ 11 sec |
 | LCD displays selected wiper mode. In INT mode, also displays delay time (SHORT, MEDIUM, LONG). | *Engine on → change wiper mode and delay*<br>1. Switch to HI, LO, OFF<br>2. Switch to INT with each delay | All tests passed<br>1. Display shows HI, LO, OFF<br>2. Display shows INT with SHORT/MEDIUM/LONG |
 | If engine is turned off while wipers are moving, they complete the current cycle and stop at 0°. | *Engine on, wipers in HI/LO/INT → press ignition to stop engine mid-cycle* | All tests passed<br>1. Wiper finishes sweep, stops at 0°, engine off |
